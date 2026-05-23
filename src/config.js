@@ -30,4 +30,7 @@ module.exports = {
   clientId: process.env.CLIENT_ID,
   guildId: process.env.GUILD_ID || null,
   youtubeCookie: process.env.YOUTUBE_COOKIE || null,
+  youtubeCookieFile: process.env.YOUTUBE_COOKIE_FILE || null,
+  youtubeCookies: process.env.YOUTUBE_COOKIES || null,
+  youtubeCookiesBase64: process.env.YOUTUBE_COOKIES_BASE64 || null,
 };

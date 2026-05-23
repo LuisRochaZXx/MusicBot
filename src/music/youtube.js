@@ -1,10 +1,19 @@
+const fs = require("fs");
+const os = require("os");
+const path = require("path");
 const ytdl = require("@distube/ytdl-core");
 const ytSearch = require("yt-search");
 const youtubedl = require("youtube-dl-exec");
 const play = require("play-dl");
-const { youtubeCookie } = require("../config");
+const {
+  youtubeCookie,
+  youtubeCookieFile,
+  youtubeCookies,
+  youtubeCookiesBase64,
+} = require("../config");
 
 let agent = null;
+let generatedCookieFile = null;
 
 function getAgent() {
   if (!youtubeCookie) return undefined;
@@ -66,6 +75,7 @@ async function createTrackStream(track) {
       quiet: true,
       noWarnings: true,
       noPlaylist: true,
+      ...ytDlpCookieFlags(),
     },
     { stdio: ["ignore", "pipe", "pipe"] }
   );
@@ -88,6 +98,26 @@ async function createTrackStream(track) {
   });
 
   return { stream: subprocess.stdout, type: undefined };
+}
+
+function ytDlpCookieFlags() {
+  const cookieFile = getYtDlpCookieFile();
+  return cookieFile ? { cookies: cookieFile } : {};
+}
+
+function getYtDlpCookieFile() {
+  if (youtubeCookieFile) return youtubeCookieFile;
+  if (generatedCookieFile) return generatedCookieFile;
+
+  const cookieContent = youtubeCookiesBase64
+    ? Buffer.from(youtubeCookiesBase64, "base64").toString("utf8")
+    : youtubeCookies;
+
+  if (!cookieContent) return null;
+
+  generatedCookieFile = path.join(os.tmpdir(), "youtube-cookies.txt");
+  fs.writeFileSync(generatedCookieFile, cookieContent.replace(/\\n/g, "\n"));
+  return generatedCookieFile;
 }
 
 function getThumbnail(video) {
