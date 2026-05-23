@@ -6,7 +6,7 @@
   "type": "commonjs",
   "scripts": {
     "deploy": "node src/deploy-commands.js",
-    "start": "node src/index.js"
+    "start": "node --max-old-space-size=256 src/index.js"
   },
   "engines": {
     "node": ">=20.0.0"
