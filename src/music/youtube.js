@@ -1,6 +1,18 @@
+const ytdl = require("@distube/ytdl-core");
 const ytSearch = require("yt-search");
 const youtubedl = require("youtube-dl-exec");
 const play = require("play-dl");
+const { youtubeCookie } = require("../config");
+
+let agent = null;
+
+function getAgent() {
+  if (!youtubeCookie) return undefined;
+  if (!agent) {
+    agent = ytdl.createAgent([{ name: "cookie", value: youtubeCookie }]);
+  }
+  return agent;
+}
 
 async function resolveTracks(input, requestedBy) {
   if (isYouTubePlaylist(input)) {
@@ -9,15 +21,9 @@ async function resolveTracks(input, requestedBy) {
     return videos.map((video) => toTrack(video, requestedBy));
   }
 
-  if (isYouTubeVideoUrl(input)) {
-    const info = await youtubedl(input, {
-      dumpSingleJson: true,
-      noWarnings: true,
-      noPlaylist: true,
-      skipDownload: true,
-    });
-
-    return [toTrack(info, requestedBy)];
+  if (ytdl.validateURL(input)) {
+    const info = await ytdl.getInfo(input, { agent: getAgent() });
+    return [toTrack(info.videoDetails, requestedBy)];
   }
 
   const results = await ytSearch(input);
@@ -48,7 +54,7 @@ function toTrack(video, requestedBy) {
 async function createTrackStream(track) {
   const url = track.url || buildVideoUrl(track.id);
 
-  if (!url || !isYouTubeVideoUrl(url)) {
+  if (!url || !ytdl.validateURL(url)) {
     throw new Error(`Musica sem URL valida: ${track.title || "sem titulo"}`);
   }
 
@@ -96,10 +102,6 @@ function getThumbnail(video) {
 
 function isYouTubePlaylist(input) {
   return /(?:youtube\.com|youtu\.be).*[?&]list=/.test(input);
-}
-
-function isYouTubeVideoUrl(input) {
-  return /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/|music\.youtube\.com\/watch\?v=)[\w-]+/.test(input);
 }
 
 function buildVideoUrl(id) {
