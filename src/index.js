@@ -44,6 +44,8 @@ client.on("interactionCreate", async (interaction) => {
       await handleModal(interaction);
     }
   } catch (error) {
+    if (isInteractionAlreadyHandled(error)) return;
+
     console.error("Erro ao responder interacao:", error);
     await safeReply(
       interaction,
@@ -328,10 +330,15 @@ function addMusicModal() {
 }
 
 async function refreshControlPanel(interaction, player, message) {
-  await interaction.update({
-    embeds: [player.nowPlayingEmbed()],
-    components: playerControlRows(),
-  });
+  try {
+    await interaction.update({
+      embeds: [player.nowPlayingEmbed()],
+      components: playerControlRows(),
+    });
+  } catch (error) {
+    if (isInteractionAlreadyHandled(error)) return;
+    throw error;
+  }
 
   if (message) {
     await interaction
@@ -363,6 +370,10 @@ async function safeReply(interaction, content) {
   }
 
   await interaction.reply({ content, ephemeral: true }).catch(() => {});
+}
+
+function isInteractionAlreadyHandled(error) {
+  return error?.code === 40060 || error?.code === "InteractionAlreadyReplied";
 }
 
 client.on("voiceStateUpdate", (_, newState) => {
