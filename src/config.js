@@ -33,4 +33,9 @@ module.exports = {
   youtubeCookieFile: process.env.YOUTUBE_COOKIE_FILE || null,
   youtubeCookies: process.env.YOUTUBE_COOKIES || null,
   youtubeCookiesBase64: process.env.YOUTUBE_COOKIES_BASE64 || null,
+  youtubeCookiesBase64Chunks: Object.entries(process.env)
+    .filter(([key]) => /^YOUTUBE_COOKIES_BASE64_\d+$/.test(key))
+    .sort(([a], [b]) => Number(a.split("_").at(-1)) - Number(b.split("_").at(-1)))
+    .map(([, value]) => value)
+    .join(""),
 };

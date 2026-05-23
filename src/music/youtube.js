@@ -10,6 +10,7 @@ const {
   youtubeCookieFile,
   youtubeCookies,
   youtubeCookiesBase64,
+  youtubeCookiesBase64Chunks,
 } = require("../config");
 
 let agent = null;
@@ -109,8 +110,9 @@ function getYtDlpCookieFile() {
   if (youtubeCookieFile) return youtubeCookieFile;
   if (generatedCookieFile) return generatedCookieFile;
 
-  const cookieContent = youtubeCookiesBase64
-    ? Buffer.from(youtubeCookiesBase64, "base64").toString("utf8")
+  const base64Cookies = youtubeCookiesBase64 || youtubeCookiesBase64Chunks;
+  const cookieContent = base64Cookies
+    ? Buffer.from(base64Cookies, "base64").toString("utf8")
     : youtubeCookies;
 
   if (!cookieContent) return null;
