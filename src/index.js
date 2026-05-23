@@ -47,7 +47,7 @@ client.on("interactionCreate", async (interaction) => {
     console.error("Erro ao responder interacao:", error);
     await safeReply(
       interaction,
-      `Deu erro ao executar isso: ${error.message || "erro desconhecido"}`
+      "Deu erro ao executar isso. Ve o terminal para detalhes."
     );
   }
 });
