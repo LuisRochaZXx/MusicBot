@@ -66,16 +66,7 @@ class GuildMusicPlayer {
       }
     });
 
-    try {
-      await entersState(this.connection, VoiceConnectionStatus.Ready, 60_000);
-    } catch (error) {
-      this.destroy();
-      throw new Error(
-        "Nao consegui conectar ao canal de voz em ate 60s. Confira permissoes de Connect/Speak e se o host permite conexoes UDP de voz do Discord.",
-        { cause: error }
-      );
-    }
-
+    await entersState(this.connection, VoiceConnectionStatus.Ready, 30_000);
     return this.connection;
   }
 
