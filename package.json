@@ -2,7 +2,7 @@
   "name": "discord-youtube-music-bot",
   "version": "1.0.0",
   "description": "Bot pessoal de Discord para tocar musicas do YouTube com slash commands.",
-  "main": "src/index.js",
+  "main": "index.js",
   "type": "commonjs",
   "scripts": {
     "deploy": "node src/deploy-commands.js",
