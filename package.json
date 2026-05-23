@@ -1,0 +1,26 @@
+{
+  "name": "discord-youtube-music-bot",
+  "version": "1.0.0",
+  "description": "Bot pessoal de Discord para tocar musicas do YouTube com slash commands.",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "deploy": "node src/deploy-commands.js",
+    "start": "node src/index.js"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@discordjs/voice": "^0.19.2",
+    "@distube/ytdl-core": "^4.16.12",
+    "discord.js": "^14.26.4",
+    "dotenv": "^16.4.7",
+    "ffmpeg-static": "^5.3.0",
+    "libsodium-wrappers": "^0.7.15",
+    "opusscript": "^0.0.8",
+    "play-dl": "^1.9.7",
+    "youtube-dl-exec": "^3.1.7",
+    "yt-search": "^2.13.1"
+  }
+}
